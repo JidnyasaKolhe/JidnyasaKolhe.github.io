@@ -81,7 +81,7 @@ The static site itself reads nothing from the environment; this is only for a ba
 Almost all copy lives as plain HTML in `index.html`, so editing is find-and-replace friendly. Two things are data-driven in JavaScript:
 
 - **Selected Work cards + modals** — edit the `PROJECTS` array near the top of the `<script>` block. Each object has `title, sub, tools, problem, sources, approach, deliverable, value`. Add or remove objects and the grid + modals update automatically.
-- **Résumé content** — edit `buildResumeHTML()` in the same script (see below).
+- **Résumé file** — the embedded PDF; see "Résumé (Download button)" below.
 
 To change **metrics**, edit the `data-to` and `data-suffix` attributes on `<span class="counter">` in the Impact section. To change **accent meanings**, edit the CSS variables at the very top (`--cyan-accent`, `--green-accent`, `--gold-accent`, `--coral-accent`).
 
@@ -89,26 +89,13 @@ To change **metrics**, edit the `data-to` and `data-suffix` attributes on `<span
 
 ## Résumé (Download button)
 
-The **Download Résumé** button generates a clean, ATS-friendly résumé from the same source-of-truth data (`buildResumeHTML()`), so it works immediately with **no external file**. It downloads as `Jidnyasa-Kolhe-Resume.html`, which opens in any browser and prints to PDF.
-
-**To serve your own PDF instead:** drop `Jidnyasa-Kolhe-Resume.pdf` next to `index.html`, then change the résumé links to:
-```html
-<a href="Jidnyasa-Kolhe-Resume.pdf" download> … </a>
-```
-and remove (or leave) the `downloadResume` handler in the script.
+The **Download Résumé** buttons (nav, contact, mobile menu) download Jidnyasa's actual résumé — `JidnyasaKolhe_AnalystBIStrategy.pdf` — which is embedded in `index.html` as base64, so the exact PDF downloads with no extra file or network request. To update it, re-embed a new PDF (replace the `RESUME_PDF_B64` constant) or switch the links to a separate hosted PDF file.
 
 ---
 
-## Contact form behavior (honest by design)
+## Contact form behavior
 
-The form **validates in the browser** (name, valid email, message required) and shows a polished success state — but it does **not** pretend to send anything, because no backend is wired. The status message explicitly says the message was *not* sent and points to the direct email.
-
-**To enable real delivery**, open the `CONTACT FORM` section of the script and follow the clearly-marked **BACKEND INTEGRATION POINT**. Uncomment one option:
-- **Formspree** — one `fetch` to your form ID.
-- **Netlify Forms** — add `name="contact" data-netlify="true"` to the `<form>`.
-- **Resend / custom API** — POST to your endpoint.
-
-Then set `const CONFIGURED = true;`.
+The form validates in the browser (name, valid email, message required), then sends via **FormSubmit.co** (free, no account) to `Jidnyasa2904@gmail.com` with a spam honeypot. Success is only claimed when the service accepts the message; on failure the form shows an honest error with a direct email link. **One-time activation:** the first live submission triggers a confirmation email to that inbox — click its link once and all subsequent messages are delivered. To switch providers (Formspree, Resend, Netlify Forms), replace the `fetch` in the `EMAIL BACKEND` section of the script.
 
 ---
 
